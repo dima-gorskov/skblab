@@ -1,0 +1,32 @@
+<div class="dashboard">
+    <div
+        class="dashboard__ready"
+        cdkDropList
+        id="ready-container"
+        #readyList="cdkDropList"
+        [cdkDropListData]="tasks"
+        [cdkDropListConnectedTo]="[doneList]"
+        (cdkDropListDropped)="drop($event)"
+    >
+        <h3 class="dashboard__column-title">Открытые задачи</h3>
+        <a [attr.data-id]="task.id" [routerLink]="['/detail', task.id]" *ngFor="let task of tasks" class="task" cdkDrag>
+            <span [ngClass]="task.warning">{{ task.title }}</span>
+            <span>Дедлайн: {{task.expDate | date: 'dd.MM.yyyy'}}</span>
+        </a>
+    </div>
+    <div
+        class="dashboard__done"
+        cdkDropList
+        id="done-container"
+        #doneList="cdkDropList"
+        [cdkDropListData]="doneTasks"
+        [cdkDropListConnectedTo]="[readyList]"
+        (cdkDropListDropped)="drop($event)"
+    >
+        <h3 class="dashboard__column-title">Закрытые задачи</h3>
+        <a [attr.data-id]="task.id" [routerLink]="['/detail', task.id]" *ngFor="let task of doneTasks" class="task" cdkDrag>
+            <span [ngClass]="task.warning">{{ task.title }}</span>
+            <span>Дедлайн: {{task.expDate | date: 'dd.MM.yyyy'}}</span>
+        </a>
+    </div>
+</div>

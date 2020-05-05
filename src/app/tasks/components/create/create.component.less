@@ -1,0 +1,28 @@
+.task-create {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+
+    &__fields {
+        flex: 0 1 60%;
+        margin-right: 5px;
+
+        & .mat-form-field {
+            display: block;
+        }
+    }
+
+    &__side-fields {
+        flex: 0 1 30%;
+        margin-left: 5px;
+    }
+    
+    &__buttons {
+        flex: 1 1 auto;
+        text-align: right;
+
+        & .mat-button-base:first-child {
+            margin-right: 20px;
+        }
+    }
+}
