@@ -1,4 +1,7 @@
-<div class="dashboard">
+<div *ngIf="!allTasks.length" class="dashboard">
+    <p>Нет задач для отображения</p>
+</div>
+<div *ngIf="allTasks.length" class="dashboard">
     <div
         class="dashboard__ready"
         cdkDropList

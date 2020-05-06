@@ -6,18 +6,18 @@
 >
 </mat-progress-spinner>
 <main *ngIf="!loading">
-    <form class="task-create">
+    <form [formGroup]="createTaskForm" class="task-create" (ngSubmit)="submit()">
         <div class="task-create__fields">
             <mat-form-field>
                 <mat-label>Название задачи</mat-label>
-                <input matInput [formControl]="titleControl" />
+                <input matInput formControlName="title" />
             </mat-form-field>
 
             <mat-form-field>
                 <mat-label>Описание задачи</mat-label>
                 <textarea
                     matInput
-                    [formControl]="descriptionControl"
+                    formControlName="description"
                 ></textarea>
             </mat-form-field>
         </div>
@@ -27,7 +27,7 @@
                 <input
                     matInput
                     [matDatepicker]="picker"
-                    [formControl]="dateControl"
+                    formControlName="date"
                 />
                 <mat-datepicker-toggle
                     matSuffix
@@ -38,7 +38,7 @@
 
             <mat-form-field>
                 <mat-label>Статус</mat-label>
-                <mat-select [formControl]="statusControl">
+                <mat-select formControlName="status">
                     <mat-option
                         *ngFor="let status of statusOptions"
                         [value]="status.value"
@@ -49,9 +49,11 @@
             </mat-form-field>
         </div>
         <div class="task-create__buttons">
-            <a (click)="submit()" mat-raised-button color="primary"
-                >Сохранить</a
-            >
+            <a 
+                (click)="submit()"
+                mat-raised-button color="primary"
+                [disabled]="!isValid">
+                Сохранить</a>
             <a [routerLink]="['/dashboard']" mat-stroked-button>Отмена</a>
         </div>
     </form>

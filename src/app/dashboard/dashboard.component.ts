@@ -18,6 +18,7 @@ import { ITask } from '../tasks/interface/task.interface';
 export class DashboardComponent implements OnInit {
     public tasks: TaskViewModel[] = [];
     public doneTasks: TaskViewModel[] = [];
+    public allTasks: TaskViewModel[] = [];
     constructor(private taskService: TaskService) {}
 
     public ngOnInit(): void {
@@ -50,6 +51,7 @@ export class DashboardComponent implements OnInit {
             this.doneTasks = tasks
                 .map((task) => new TaskViewModel(task))
                 .filter((task) => task.status === 'done');
+            this.allTasks = [...this.tasks, ...this.doneTasks];
         });
     }
 

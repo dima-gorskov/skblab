@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { TaskViewModel } from '../../view-models/tasks.view-model';
 import { TaskService } from 'src/app/tasks.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ITask } from '../../interface/task.interface';
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators, FormGroup } from '@angular/forms';
 
 @Component({
     selector: 'app-create',
@@ -13,16 +12,19 @@ import { FormControl } from '@angular/forms';
 export class CreateComponent implements OnInit {
     public task: TaskViewModel;
     public loading = true;
-    public editMode: boolean;
-    public titleControl: FormControl = new FormControl();
-    public descriptionControl: FormControl = new FormControl();
-    public dateControl: FormControl = new FormControl();
-    public statusControl: FormControl = new FormControl();
-
+    public isEditMode: boolean;
+    public createTaskForm: FormGroup;
+    public titleControl: FormControl;
+    public descriptionControl: FormControl;
+    public dateControl: FormControl;
+    public statusControl: FormControl;
+    public minDate: Date;
     public statusOptions = [
         { value: 'open', title: 'Открыто' },
         { value: 'done', title: 'Закрыто' }
     ];
+
+    public isValid: boolean = false;
 
     private id: number;
 
@@ -33,9 +35,10 @@ export class CreateComponent implements OnInit {
     ) {}
 
     public ngOnInit(): void {
+        this.initControls();
         const { id } = this.route.snapshot.params;
-        this.id = +id;
-        this.editMode = !!this.id;
+        this.id = parseFloat(id);
+        this.isEditMode = !!this.id;
         if (this.id) {
             this.taskService.getTaskById(id).subscribe((res) => {
                 this.task = new TaskViewModel(res);
@@ -45,13 +48,18 @@ export class CreateComponent implements OnInit {
                 this.dateControl.setValue(this.task.expDate, { emitEvent: false });
                 this.statusControl.setValue(this.task.status, { emitEvent: false });
                 this.loading = false;
+                this.setValid();
             });
         } else {
+            this.statusControl.setValue(this.statusOptions[0].value, { emitEvent: false });
             this.loading = false;
         }
     }
 
     public submit() {
+        if (!this.isValid) {
+            return;
+        }
         const data = {
             id: this.id,
             title: this.titleControl.value,
@@ -59,7 +67,7 @@ export class CreateComponent implements OnInit {
             expDate: this.dateControl.value
         } as TaskViewModel;
 
-        this.editMode ?
+        this.isEditMode ?
             this.taskService.updateTask(data).subscribe(res => {
                 console.log(res);
                 this.redirectToDashboard();
@@ -72,5 +80,29 @@ export class CreateComponent implements OnInit {
 
     private redirectToDashboard() {
         this.router.navigate(['/dashboard']);
+    }
+
+    private initControls() {
+        this.titleControl = new FormControl('', [Validators.required]);
+        this.descriptionControl = new FormControl('', [Validators.required]);
+        this.dateControl = new FormControl(new Date(), [Validators.required]);
+        this.statusControl = new FormControl(this.statusOptions[0], [Validators.required]);
+        this.createTaskForm = new FormGroup({
+            title: this.titleControl,
+            description: this.descriptionControl,
+            date: this.dateControl,
+            status: this.statusControl
+        });
+
+        this.createTaskForm.valueChanges.subscribe(value => {
+            this.setValid();
+        });
+    }
+
+    private setValid() {
+        this.isValid = this.titleControl.valid &&
+            this.descriptionControl.valid &&
+            this.dateControl.valid &&
+            this.statusControl.valid;
     }
 }

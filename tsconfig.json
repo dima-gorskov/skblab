@@ -1,5 +1,8 @@
 {
   "compileOnSave": false,
+  "rules": {
+    "no-inferrable-types": true
+  },
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
