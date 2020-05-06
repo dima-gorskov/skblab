@@ -64,7 +64,8 @@ export class CreateComponent implements OnInit {
             id: this.id,
             title: this.titleControl.value,
             description: this.descriptionControl.value,
-            expDate: this.dateControl.value
+            expDate: this.dateControl.value,
+            status: this.statusControl.value
         } as TaskViewModel;
 
         this.isEditMode ?
